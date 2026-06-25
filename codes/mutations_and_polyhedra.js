@@ -446,3 +446,6 @@ function mutateEntity(ent, mut) {
             defExports[exportName] = mutateEntity(defExports[shape], mutations[mut]);
         }
     }
+
+// The result becomes things like:
+// shinyEgg, realLegendaryPentagon, rainbowLabyBetaTriangle, etc.
