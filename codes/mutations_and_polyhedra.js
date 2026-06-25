@@ -328,45 +328,28 @@ var mutations = {
 };
 
 // Functions
-const deepCopy = (type) => {
-        const pushArray = (input, key) => {
-            let arrOut = [];
-            for (let i = 0; i < input.length; i++) {
-                switch (typeof input[i]) {
-                    case 'object':
-                        if (Array.isArray(input[i])) arrOut.push(pushArray(input[i]));
-                        else {
-                            if (key == "TYPE") arrOut.push(input[i]);
-                            else arrOut.push(deepCopy(input[i]));
-                        }
-                        break;
-                    default:
-                        arrOut.push(input[i]);
-                        break;
-                }
+    function deepCloneA(obj, seen = new WeakMap()) {
+        if (obj === null || typeof obj !== "object") return obj
+
+        if (seen.has(obj)) return seen.get(obj)
+
+        let clone = Array.isArray(obj) ? [] : {}
+        seen.set(obj, clone)
+
+        for (let key in obj) {
+            let value = obj[key]
+
+            // Keep functions as-is
+            if (typeof value === "function") {
+                clone[key] = value
+                continue
             }
-            return arrOut;
-        };
-        let output = JSON.parse(JSON.stringify(type));
-        if (Array.isArray(type)) output = pushArray(type);
-        else {
-            for (let key in type) {
-                switch (typeof type[key]) {
-                    case 'object':
-                        if (Array.isArray(type[key])) output[key] = pushArray(type[key], key);
-                        else {
-                            if (key == "TYPE") output[key] = type[key];
-                            else output[key] = deepCopy(type[key]);
-                        }
-                        break;
-                    default:
-                        output[key] = type[key];
-                        break;
-                }
-            }
+
+            clone[key] = deepCloneA(value, seen)
         }
-        return output;
-    };
+
+        return clone
+    }
 
 function mutateEntity(ent, mut) {
         let orgEnt = deepCloneA(ent)
