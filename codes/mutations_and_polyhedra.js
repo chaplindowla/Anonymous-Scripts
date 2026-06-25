@@ -1,4 +1,4 @@
-// Polyhedras
+// Polyhedra
 defExports.cube = {
         PARENT: [defExports.food],
         LABEL: "Cube",
